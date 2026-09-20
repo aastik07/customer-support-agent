@@ -2,7 +2,7 @@
 
 ## Project Goal
 
-Build an intelligent Customer Support Agent for a college project that can:
+Build an intelligent Customer Support Agent as a solo project that can:
 
 - Answer customer questions accurately using a curated knowledge base (RAG).
 - Call custom tools to look up live data (e.g., order status, refund eligibility).
@@ -136,15 +136,33 @@ User (Browser)
 
 ---
 
+## Solo Developer Responsibilities
+
+This is a solo project. All areas of development are owned and integrated by a single developer.
+
+| Area                  | Responsibility                                                                 |
+|-----------------------|--------------------------------------------------------------------------------|
+| Microsoft Foundry     | Provision and configure the Foundry workspace, models, and connections         |
+| Foundry Agent         | Define the agent, system prompt, tool registrations, and conversation logic    |
+| Foundry IQ / RAG      | Set up the knowledge index, manage documents, tune retrieval                   |
+| Custom Tools          | Implement and test all Python tool functions registered with the agent         |
+| FastAPI Backend       | Build and maintain all API routes, middleware, and credential handling         |
+| Frontend              | Develop the single-page chat UI and integrate it with the backend              |
+| Testing               | Write and run unit tests, integration tests, and end-to-end validation         |
+| Documentation         | Keep all docs, comments, and this file accurate and up to date                 |
+| GitHub                | Manage the repository, commits, branching, and version history                 |
+
+---
+
 ## Project Rules
 
-These rules apply to all team members at all times.
+These rules apply at all times.
 
 1. **Never expose secrets.** API keys, passwords, and tokens must never appear in code or commits.
 2. **Never put Azure credentials in GitHub.** Use `.env` locally; use GitHub Secrets for CI/CD only.
 3. **Never modify unrelated files.** Each task should touch only the files it needs to change.
 4. **Do not rewrite existing files unless explicitly instructed.** Prefer targeted edits.
 5. **Keep implementations simple.** Choose the straightforward solution over the clever one.
-6. **Prefer small changes.** Incremental PRs are easier to review and safer to merge.
+6. **Prefer small changes.** Incremental commits are easier to review and safer to merge.
 7. **Do not create unnecessary Azure resources.** Every resource costs money and adds complexity.
-8. **Do not change the architecture without asking.** Discuss structural changes with the team first.
+8. **Do not change the architecture without good reason.** Think through structural changes carefully before implementing them.
