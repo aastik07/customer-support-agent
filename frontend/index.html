@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NovaBuy AI-powered customer support agent. Get instant help with orders, returns, refunds, shipping, and more." />
+  <title>NovaBuy — Customer Support Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ── Header ── -->
+    <header class="header" role="banner">
+      <div class="header__inner">
+        <div class="header__brand">
+          <div class="header__avatar" aria-hidden="true">
+            <span class="header__avatar-icon">✦</span>
+            <span class="header__status-dot" title="Agent online"></span>
+          </div>
+          <div class="header__text">
+            <h1 class="header__title">Customer Support Agent</h1>
+            <p class="header__subtitle">NovaBuy · AI-powered support</p>
+          </div>
+        </div>
+        <div class="header__badge" aria-label="Agent status: online">
+          <span class="header__badge-dot" aria-hidden="true"></span>
+          Online
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Chat window ── -->
+    <main class="chat" id="chat-window" role="log" aria-live="polite" aria-label="Conversation">
+
+      <!-- Welcome message injected by JS, but here as a static fallback -->
+      <div class="message message--agent" id="welcome-message">
+        <div class="message__avatar" aria-hidden="true">✦</div>
+        <div class="message__bubble">
+          <p>Hi! I'm <strong>Aria</strong>, your NovaBuy support assistant. 👋</p>
+          <p>I can help you with orders, returns, refunds, shipping, and more. How can I help you today?</p>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ── Loading indicator ── -->
+    <div class="typing-indicator" id="typing-indicator" aria-live="polite" aria-label="Agent is typing" hidden>
+      <div class="message__avatar" aria-hidden="true">✦</div>
+      <div class="typing-indicator__dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- ── Error banner ── -->
+    <div class="error-banner" id="error-banner" role="alert" hidden>
+      <span class="error-banner__icon" aria-hidden="true">⚠</span>
+      <span class="error-banner__text" id="error-text">Something went wrong. Please try again.</span>
+      <button class="error-banner__close" id="error-close-btn" aria-label="Dismiss error">✕</button>
+    </div>
+
+    <!-- ── Suggested questions ── -->
+    <section class="suggestions" id="suggestions" aria-label="Suggested questions">
+      <button class="suggestion-chip" data-question="Where is my order?">Where is my order?</button>
+      <button class="suggestion-chip" data-question="What is your return policy?">Return policy</button>
+      <button class="suggestion-chip" data-question="How do I get a refund?">How do I get a refund?</button>
+      <button class="suggestion-chip" data-question="What are your shipping options?">Shipping options</button>
+      <button class="suggestion-chip" data-question="Does my product have a warranty?">Warranty</button>
+      <button class="suggestion-chip" data-question="I need to speak to a human agent.">Contact support</button>
+    </section>
+
+    <!-- ── Input bar ── -->
+    <footer class="input-bar" role="form" aria-label="Send a message">
+      <label for="user-input" class="sr-only">Type your message</label>
+      <textarea
+        id="user-input"
+        class="input-bar__textarea"
+        placeholder="Ask about your order, returns, refunds…"
+        rows="1"
+        maxlength="2000"
+        autocomplete="off"
+        spellcheck="true"
+        aria-label="Your message"
+      ></textarea>
+      <button
+        id="send-btn"
+        class="input-bar__send"
+        aria-label="Send message"
+        disabled
+      >
+        <svg class="input-bar__send-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

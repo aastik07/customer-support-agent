@@ -5,7 +5,7 @@
 azure-ai-projects>=1.0.0b4
 azure-identity>=1.17.0
 
-# FastAPI backend (installed now so the environment is ready for Phase 5)
+# FastAPI backend
 fastapi>=0.111.0
 uvicorn[standard]>=0.29.0
 python-dotenv>=1.0.0
