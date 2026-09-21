@@ -96,31 +96,31 @@ User (Browser)
 
 ---
 
-## Four Planned Custom Tools
+## Four Custom Tools
 
-### 1. `get_order_status`
+### 1. `check_order_status`
 - **Purpose**: Look up the current status of a customer's order.
 - **Input**: `order_id` (string)
-- **Output**: Order status, estimated delivery date, carrier info.
+- **Output**: Order status, estimated delivery date, refund state.
 - **Location**: `backend/tools/order_status.py`
 
-### 2. `check_refund_eligibility`
-- **Purpose**: Determine whether an order qualifies for a refund based on policy rules.
-- **Input**: `order_id` (string), `reason` (string)
-- **Output**: Eligible (yes/no), reason, next steps.
-- **Location**: `backend/tools/refund_eligibility.py`
+### 2. `get_customer_info`
+- **Purpose**: Retrieve a customer profile and order history.
+- **Input**: `customer_id` (string)
+- **Output**: Customer name, total orders, and order list.
+- **Location**: `backend/tools/customer_info.py`
 
-### 3. `get_product_info`
-- **Purpose**: Retrieve structured product details not covered by the knowledge base.
-- **Input**: `product_id` (string)
-- **Output**: Product name, specs, availability, price.
-- **Location**: `backend/tools/product_info.py`
+### 3. `check_refund_status`
+- **Purpose**: Check the refund status of a specific order.
+- **Input**: `order_id` (string)
+- **Output**: Refund state and human-readable description.
+- **Location**: `backend/tools/refund_status.py`
 
 ### 4. `create_support_ticket`
 - **Purpose**: Create a support ticket when the agent cannot resolve the issue.
-- **Input**: `customer_email` (string), `subject` (string), `description` (string)
-- **Output**: Ticket ID, confirmation message.
-- **Location**: `backend/tools/create_ticket.py`
+- **Input**: `customer_id` (string), `issue` (string)
+- **Output**: Ticket ID, status, SLA, confirmation message.
+- **Location**: `backend/tools/support_ticket.py`
 
 ---
 
