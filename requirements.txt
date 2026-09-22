@@ -2,7 +2,7 @@
 # Install with: pip install -r requirements.txt
 
 # Microsoft Foundry / Azure AI
-azure-ai-projects>=1.0.0b4
+azure-ai-projects>=2.0.0
 azure-identity>=1.17.0
 
 # FastAPI backend

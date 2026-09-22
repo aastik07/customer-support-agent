@@ -161,8 +161,12 @@ function appendMessage(role, text) {
 // ── Text formatting ────────────────────────────────────────────────────────────
 
 function formatText(raw) {
+  // Strip Foundry citation markers: private-use Unicode blocks \uE200…\uE201
+  // These appear as raw tokens like \uE200cite\uE202turn6:0\uE201 in RAG replies.
+  let clean = raw.replace(/\uE200[\s\S]*?\uE201/g, '');
+
   // Escape HTML entities first to prevent XSS.
-  let safe = raw
+  let safe = clean
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');

@@ -73,12 +73,12 @@ When a customer interacts with the agent, the system follows a defined request-r
 1.  **Customer Input:** The customer types a message into the frontend chat interface and clicks send.
 2.  **Frontend Transmission:** The JavaScript client sends an HTTP `POST` request to the backend's `/chat` endpoint, including the user's message and the current `thread_id` (if the conversation is ongoing).
 3.  **Backend Reception:** FastAPI receives the request and passes the payload to the agent interface layer (`backend/agent.py`).
-4.  **Agent Processing:** The backend uses the Azure AI Projects SDK to append the message to the active Foundry thread and initiates an agent run.
+4.  **Agent Processing:** The backend uses the Azure AI Projects SDK (`client.responses.create`) to send the message directly to the Foundry Agent via the Responses API.
 5.  **Agent Orchestration:** The Microsoft Foundry Agent evaluates the input against its system prompt. It determines if it can answer directly, if it needs to retrieve policy information, or if it must fetch dynamic data.
 6.  **Knowledge Retrieval (If needed):** For policy or FAQ questions, the agent queries Foundry IQ, which searches Azure AI Search and returns relevant document chunks.
 7.  **Tool Invocation (If needed):** For dynamic requests (e.g., "Where is my order?"), the agent pauses generation, determines the required parameters, and sends an OpenAPI tool call to the FastAPI custom endpoints (authenticating via `x-api-key`). The backend executes the python function and returns the JSON result to the agent.
 8.  **Final Generation:** The agent synthesizes the retrieved knowledge and/or tool outputs into a concise, natural language response.
-9.  **Response Delivery:** The backend polls for the completed run, extracts the agent's text response, and returns it to the frontend alongside the `thread_id`.
+9.  **Response Delivery:** The `responses.create()` call blocks synchronously until the agent has finished. The backend extracts the agent's text from the response output, and returns it to the frontend alongside the `thread_id` (which is the `resp_...` response ID used as `previous_response_id` on the next turn).
 10. **UI Update:** The frontend renders the agent's message in the chat window.
 
 ---
@@ -161,7 +161,7 @@ sequenceDiagram
     participant DB as data/orders.json
 
     User->>API: POST /chat {message, thread_id}
-    API->>Agent: Send message to Thread, Start Run
+    API->>Agent: responses.create(input=message, previous_response_id=...)
     
     alt Needs Policy Info
         Agent->>RAG: Vector Search Query
@@ -189,8 +189,8 @@ The system implements robust error handling at multiple levels:
 *   **Invalid Identifiers:** If the agent provides an invalid or non-existent `order_id` or `customer_id` to a custom tool, the tool returns a graceful JSON error response (e.g., `{"found": false, "error": "No order found..."}`). The agent reads this and informs the user politely.
 *   **Invalid Ticket Input:** The `create_support_ticket` tool validates input length and presence. If the description is too short, it returns an error prompting the agent to ask the user for more details.
 *   **API Authentication Errors:** If an endpoint is called without a valid `x-api-key`, FastAPI immediately returns an `HTTP 401 Unauthorized` response.
-*   **Stub Mode (Missing Configuration):** If the backend is started without `AZURE_FOUNDRY_ENDPOINT` or `AGENT_ID` defined in the environment, the `/chat` endpoint operates in "stub mode." It intercepts requests and returns a static fallback message, preventing server crashes during UI development.
-*   **Agent Timeouts:** If the Foundry agent takes longer than the configured timeout (60 seconds) to complete a run, the backend raises an `AgentError` and returns a generic `HTTP 500` error to the frontend, masking internal stack traces from the user.
+*   **Stub Mode (Missing Configuration):** If the backend is started without `AZURE_FOUNDRY_ENDPOINT` or `AGENT_NAME` defined in the environment, the `/chat` endpoint operates in "stub mode." It intercepts requests and returns a static fallback message, preventing server crashes during UI development.
+*   **Stateless Responses API:** The Foundry integration uses `client.responses.create()` synchronously. There is no polling loop — the call blocks until the agent finishes and returns the full response. Conversation continuity is achieved via `previous_response_id`: the first request returns a `resp_...` ID; the frontend sends it back as `thread_id`; subsequent requests pass it as `previous_response_id` so Foundry can reconstruct conversation context.
 
 ---
 

@@ -65,7 +65,7 @@ The frontend is a simple single-page chat interface. The backend is a FastAPI ap
 - **Customer information lookup** — customer profile and order history via custom tool
 - **Refund status lookup** — refund state and description via custom tool
 - **Support ticket creation** — agent creates tickets on behalf of customers
-- **Multi-turn conversation** — conversation context maintained across turns via Foundry thread IDs
+- **Multi-turn conversation** — conversation context maintained across turns via `previous_response_id` (each response returns a `resp_...` ID passed back on the next request)
 - **API-key protected custom tool endpoints** — four endpoints secured with `x-api-key` header authentication
 - **Stub mode** — backend runs and responds meaningfully even before Foundry credentials are configured
 - **Single-page chat UI** — HTML/CSS/JavaScript frontend with typing indicator, suggested questions, and error handling
@@ -367,13 +367,13 @@ Open `.env` and replace the placeholders with your actual values:
 # Microsoft Foundry
 AZURE_FOUNDRY_ENDPOINT=https://your-endpoint.api.azureml.ms
 AZURE_FOUNDRY_PROJECT_NAME=your-project-name
-AGENT_ID=your-agent-id
+AGENT_NAME=CustomerSupportAgent
 AGENT_MODEL=gpt-4o
 
-# Azure AI Search (used by Foundry IQ)
+# Azure AI Search (used by Foundry IQ — credentials managed by DefaultAzureCredential)
 SEARCH_INDEX_NAME=your-search-index
 SEARCH_ENDPOINT=https://your-search.search.windows.net
-SEARCH_API_KEY=your-search-api-key
+# No SEARCH_API_KEY needed: Foundry IQ authenticates via DefaultAzureCredential.
 
 # FastAPI
 BACKEND_HOST=0.0.0.0
@@ -473,7 +473,7 @@ curl -X POST http://localhost:8000/chat \
 ```json
 {
   "reply": "You can return most items within 30 days of delivery...",
-  "thread_id": "thread_abc123",
+  "thread_id": "resp_abc123",
   "stub": false
 }
 ```
@@ -593,9 +593,15 @@ The following examples show realistic queries you can send through the chat inte
 
 ## 14. Testing
 
-### Test Framework
+### Automated Tests
 
-The project has pytest, pytest-asyncio, and httpx installed as dependencies (see `requirements.txt`). The `tests/` directory is scaffolded and ready. No automated test files have been written yet.
+16 automated tests are implemented in `tests/` covering all four custom tool functions:
+
+```bash
+pytest tests/ -v
+```
+
+All 16 tests pass. They test each tool for valid input, invalid/unknown IDs, and edge cases (empty input, short strings).
 
 ### Manual and API Testing
 
@@ -647,7 +653,7 @@ All core agent functionality has been tested manually during development using:
 
 ### `/chat` returns a stub response
 
-- The backend is running in stub mode because `AZURE_FOUNDRY_ENDPOINT` or `AGENT_ID` is not set in `.env`.
+- The backend is running in stub mode because `AZURE_FOUNDRY_ENDPOINT` or `AGENT_NAME` is not set in `.env`.
 - Set both variables and restart the server.
 
 ### Foundry agent cannot reach the custom tool endpoints
@@ -689,7 +695,7 @@ The core agent functionality has been fully implemented and tested:
 - ✅ Single-page chat frontend
 - ✅ API-key authentication on custom tool endpoints
 - ✅ OpenAPI specification generated and verified
-- ✅ Multi-turn conversation via Foundry thread management
+- ✅ Multi-turn conversation via `previous_response_id` (Foundry Responses API)
 - ✅ Stub mode for development without Foundry credentials
 
 This is an academic demonstration project. It is not deployed to a production environment and is not intended for production use in its current form.
@@ -705,7 +711,7 @@ The following are identified areas for improvement. None of these are currently 
 | **Persistent ticket storage** | Support tickets are currently generated in-memory and not saved. A real implementation would persist tickets to a database. |
 | **Real order database** | Order data is currently read from a static JSON file. A real implementation would connect to a live order management system. |
 | **Production deployment** | The project has no production deployment. A production setup would use Azure App Service or Azure Container Apps, with HTTPS, Managed Identity, and proper secrets management. |
-| **Automated test suite** | pytest is configured but no tests have been written. Future work would add unit tests for tool functions and integration tests for the API endpoints. |
+| **Automated test suite** | 16 unit tests cover the four custom tool functions. Future work would add integration tests for the API endpoints and end-to-end agent tests. |
 | **Stronger authentication** | The API key scheme is suitable for development. Production deployments could use OAuth 2.0 or Azure Managed Identity for service-to-service authentication. |
 | **Rate limiting** | No rate limiting is currently applied. Production APIs should limit request rates to prevent abuse. |
 | **Frontend improvements** | The chat UI could be extended with message timestamps, conversation history persistence, and accessibility improvements. |

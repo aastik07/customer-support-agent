@@ -7,7 +7,7 @@ Nothing is hardcoded.
 
 Usage:
     from backend.config import settings
-    print(settings.agent_id)
+    print(settings.agent_name)
 """
 
 import os
@@ -33,7 +33,7 @@ class Settings:
     # ── Microsoft Foundry (not used until Phase 2 integration) ────────────────
     azure_foundry_endpoint: str = os.getenv("AZURE_FOUNDRY_ENDPOINT", "")
     azure_foundry_project_name: str = os.getenv("AZURE_FOUNDRY_PROJECT_NAME", "")
-    agent_id: str = os.getenv("AGENT_ID", "")
+    agent_name: str = os.getenv("AGENT_NAME", "")
     agent_model: str = os.getenv("AGENT_MODEL", "gpt-4o")
 
     # ── Foundry IQ / RAG (not used until Phase 3) ─────────────────────────────
@@ -49,7 +49,7 @@ class Settings:
 
     def is_foundry_configured(self) -> bool:
         """Return True if the minimum Foundry env vars have been set."""
-        return bool(self.azure_foundry_endpoint and self.agent_id)
+        return bool(self.azure_foundry_endpoint and self.agent_name)
 
 
 @lru_cache(maxsize=1)

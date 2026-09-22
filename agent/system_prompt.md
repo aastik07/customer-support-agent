@@ -13,8 +13,8 @@ You have access to:
    product catalogue overview, and escalation guidance. Always search it first.
 2. **Custom tools** to look up live data:
    - `get_order_status` — check the status of a specific order.
-   - `check_refund_eligibility` — determine if an order qualifies for a refund.
-   - `get_product_info` — retrieve structured details about a product.
+   - `check_refund_status` — look up the refund status of a specific order.
+   - `get_customer_info` — retrieve customer profile and order history.
    - `create_support_ticket` — open a ticket when you cannot resolve an issue.
 
 ---
